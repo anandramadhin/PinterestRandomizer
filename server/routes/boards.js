@@ -1,10 +1,10 @@
-const express = require("express");
+import express from "express";
+import fakeBoards from "../data/fakeBoards.js";
+
 const router = express.Router();
 
-const fakeBoards = require("../data/fakeBoards");
-
 router.get("/", (req, res) => {
-    res.json(fakeBoards);
+  res.json(fakeBoards);
 });
 
-module.exports = router;
+export default router;
