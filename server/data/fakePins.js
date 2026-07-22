@@ -72,7 +72,19 @@ const fakePins = [
     boardId: "board-3",
     title: "Green outdoor space",
     imageUrl: "https://picsum.photos/id/287/600/800"
-  }
+  },
+  {
+  id: "pin-13",
+  boardId: "board-1",
+  title: "Cozy apartment lounge",
+  imageUrl: "https://picsum.photos/id/445/600/800"
+},
+{
+  id: "pin-14",
+  boardId: "board-1",
+  title: "Contemporary sitting room",
+  imageUrl: "https://picsum.photos/id/534/600/800"
+}
 ];
 
 export default fakePins;

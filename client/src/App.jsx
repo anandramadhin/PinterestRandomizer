@@ -5,6 +5,7 @@ function App() {
   const [boards, setBoards] = useState([]);
   const [selectedBoardId, setSelectedBoardId] = useState("");
   const [pins, setPins] = useState([]);
+  const [displayedPins, setDisplayedPins] = useState([]);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -57,6 +58,7 @@ function App() {
 
         const data = await response.json();
         setPins(data);
+        setDisplayedPins(chooseRandomPins(data));
       } catch (err) {
         console.error(err);
         setError("Could not load the pins.");
@@ -65,6 +67,17 @@ function App() {
 
     loadPins();
   }, [selectedBoardId]);
+
+//The function below shouold choose random pins from the board
+function chooseRandomPins(pinList, amount = 3) {
+  const shuffledPins = [...pinList].sort(() => Math.random() - 0.5);
+
+  return shuffledPins.slice(0, amount);
+}
+
+function randomizePins() {
+  setDisplayedPins(chooseRandomPins(pins));
+}
 
   return (
     <main>
@@ -92,7 +105,7 @@ function App() {
       {error && <p>{error}</p>}
 
       <section>
-        {pins.map(pin => (
+        {displayedPins.map(pin => (
           <article key={pin.id}>
             <img
               src={pin.imageUrl}
@@ -104,6 +117,13 @@ function App() {
           </article>
         ))}
       </section>
+            <button
+              type="button"
+              onClick={randomizePins}
+              disabled={pins.length === 0}
+            >
+              Randomize
+            </button>
     </main>
   );
 }
