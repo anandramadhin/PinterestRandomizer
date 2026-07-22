@@ -1,7 +1,8 @@
 import express from "express";
 import cors from "cors";
-
+import pinsRoute from "./routes/pins.js";
 import boardsRoute from "./routes/boards.js";
+
 
 const app = express();
 const PORT = 3000;
@@ -23,6 +24,7 @@ app.get("/api/status", (req, res) => {
 });
 
 app.use("/api/boards", boardsRoute);
+app.use("/api/pins", pinsRoute);
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
