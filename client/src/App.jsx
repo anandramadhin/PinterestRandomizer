@@ -1,11 +1,41 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 
+const STORAGE_KEY = "pinterest-randomizer-state";
+
+function loadSavedState() {
+  try {
+    const savedState = localStorage.getItem(STORAGE_KEY);
+
+    if (!savedState) {
+      return {
+        selectedBoardId: "",
+        displayedPins: []
+      };
+    }
+
+    return JSON.parse(savedState);
+  } catch (error) {
+    console.error("Could not load saved app state:", error);
+
+    return {
+      selectedBoardId: "",
+      displayedPins: []
+    };
+  }
+}
+
 function App() {
+  const [savedState] = useState(loadSavedState);
+
   const [boards, setBoards] = useState([]);
-  const [selectedBoardId, setSelectedBoardId] = useState("");
+  const [selectedBoardId, setSelectedBoardId] = useState(
+    savedState.selectedBoardId || ""
+  );
   const [pins, setPins] = useState([]);
-  const [displayedPins, setDisplayedPins] = useState([]);
+  const [displayedPins, setDisplayedPins] = useState(
+    savedState.displayedPins || []
+  );
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -22,12 +52,19 @@ function App() {
         }
 
         const data = await response.json();
-
         setBoards(data);
 
-        if (data.length > 0) {
-          setSelectedBoardId(data[0].id);
-        }
+        setSelectedBoardId(currentBoardId => {
+          const savedBoardStillExists = data.some(
+            board => board.id === currentBoardId
+          );
+
+          if (savedBoardStillExists) {
+            return currentBoardId;
+          }
+
+          return data.length > 0 ? data[0].id : "";
+        });
       } catch (err) {
         console.error(err);
         setError("Could not load the boards.");
@@ -58,7 +95,33 @@ function App() {
 
         const data = await response.json();
         setPins(data);
-        setDisplayedPins(chooseRandomPins(data));
+
+        setDisplayedPins(currentPins => {
+          const savedPinsAreValid =
+            currentPins.length > 0 &&
+            currentPins.every(savedPin =>
+              data.some(
+                availablePin =>
+                  availablePin.id === savedPin.id &&
+                  availablePin.boardId === selectedBoardId
+              )
+            );
+
+          if (!savedPinsAreValid) {
+            return chooseRandomPins(data);
+          }
+
+          return currentPins.map(savedPin => {
+            const updatedPin = data.find(
+              pin => pin.id === savedPin.id
+            );
+
+            return {
+              ...updatedPin,
+              isKept: Boolean(savedPin.isKept)
+            };
+          });
+        });
       } catch (err) {
         console.error(err);
         setError("Could not load the pins.");
@@ -68,106 +131,131 @@ function App() {
     loadPins();
   }, [selectedBoardId]);
 
-//The function below shouold choose random pins from the board
-function chooseRandomPins(pinList, amount = 3) {
-  const shuffledPins = [...pinList];
+  useEffect(() => {
+    if (!selectedBoardId) {
+      return;
+    }
 
-  for (let index = shuffledPins.length - 1; index > 0; index--) {
-    const randomIndex = Math.floor(Math.random() * (index + 1));
+    const appState = {
+      selectedBoardId,
+      displayedPins
+    };
 
-    [shuffledPins[index], shuffledPins[randomIndex]] = [
-      shuffledPins[randomIndex],
-      shuffledPins[index]
-    ];
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(appState)
+    );
+  }, [selectedBoardId, displayedPins]);
+
+  function chooseRandomPins(pinList, amount = 3) {
+    const shuffledPins = [...pinList];
+
+    for (
+      let index = shuffledPins.length - 1;
+      index > 0;
+      index--
+    ) {
+      const randomIndex = Math.floor(
+        Math.random() * (index + 1)
+      );
+
+      [shuffledPins[index], shuffledPins[randomIndex]] = [
+        shuffledPins[randomIndex],
+        shuffledPins[index]
+      ];
+    }
+
+    return shuffledPins.slice(0, amount).map(pin => ({
+      ...pin,
+      isKept: false
+    }));
   }
 
-  return shuffledPins.slice(0, amount).map(pin => ({
-    ...pin,
-    isKept: false
-  }));
-}
-
-function randomizePins() {
-  const currentUnlockedIds = new Set(
-    displayedPins
-      .filter(pin => !pin.isKept)
-      .map(pin => pin.id)
-  );
-
-  const keptIds = new Set(
-    displayedPins
-      .filter(pin => pin.isKept)
-      .map(pin => pin.id)
-  );
-
-  const unlockedCount = displayedPins.filter(
-    pin => !pin.isKept
-  ).length;
-
-  let availablePins = pins.filter(
-    pin =>
-      !keptIds.has(pin.id) &&
-      !currentUnlockedIds.has(pin.id)
-  );
-
-  if (availablePins.length < unlockedCount) {
-    availablePins = pins.filter(
-      pin => !keptIds.has(pin.id)
+  function toggleKeep(pinId) {
+    setDisplayedPins(currentPins =>
+      currentPins.map(pin =>
+        pin.id === pinId
+          ? {
+              ...pin,
+              isKept: !pin.isKept
+            }
+          : pin
+      )
     );
   }
 
-  const replacementPins = chooseRandomPins(
-    availablePins,
-    unlockedCount
-  );
+  function randomizePins() {
+    const currentUnlockedIds = new Set(
+      displayedPins
+        .filter(pin => !pin.isKept)
+        .map(pin => pin.id)
+    );
 
-  let replacementIndex = 0;
+    const keptIds = new Set(
+      displayedPins
+        .filter(pin => pin.isKept)
+        .map(pin => pin.id)
+    );
 
-  const updatedPins = displayedPins.map(pin => {
-    if (pin.isKept) {
-      return pin;
+    const unlockedCount = displayedPins.filter(
+      pin => !pin.isKept
+    ).length;
+
+    let availablePins = pins.filter(
+      pin =>
+        !keptIds.has(pin.id) &&
+        !currentUnlockedIds.has(pin.id)
+    );
+
+    if (availablePins.length < unlockedCount) {
+      availablePins = pins.filter(
+        pin => !keptIds.has(pin.id)
+      );
     }
 
-    const replacement = replacementPins[replacementIndex];
-    replacementIndex += 1;
+    const replacementPins = chooseRandomPins(
+      availablePins,
+      unlockedCount
+    );
 
-    return replacement;
-  });
+    let replacementIndex = 0;
 
-  setDisplayedPins(updatedPins);
-}
+    const updatedPins = displayedPins.map(pin => {
+      if (pin.isKept) {
+        return pin;
+      }
 
+      const replacement =
+        replacementPins[replacementIndex];
 
-function toggleKeep(pinId) {
-  setDisplayedPins(currentPins =>
-    currentPins.map(pin =>
-      pin.id === pinId
-        ? {
-            ...pin,
-            isKept: !pin.isKept
-          }
-        : pin
-    )
-  );
-}
+      replacementIndex += 1;
+
+      return replacement;
+    });
+
+    setDisplayedPins(updatedPins);
+  }
+
+  function handleBoardChange(event) {
+    setDisplayedPins([]);
+    setSelectedBoardId(event.target.value);
+  }
+
   return (
     <main>
       <h1>Pinterest Randomizer</h1>
 
-      <label htmlFor="board-select">Choose a board</label>
+      <label htmlFor="board-select">
+        Choose a board
+      </label>
 
       <select
         id="board-select"
         value={selectedBoardId}
-        onChange={event =>
-          setSelectedBoardId(event.target.value)
-        }
+        onChange={handleBoardChange}
       >
         {boards.map(board => (
-          <option
-            key={board.id}
-            value={board.id}
-          >
+          <option key={board.id} value={board.id}>
             {board.name}
           </option>
         ))}
@@ -195,16 +283,18 @@ function toggleKeep(pinId) {
           </article>
         ))}
       </section>
-            <button
-              type="button"
-              onClick={randomizePins}
-              disabled={
-                pins.length === 0 ||
-                displayedPins.every(pin => pin.isKept)
-              }
-            >
-              Randomize
-            </button>
+
+      <button
+        type="button"
+        onClick={randomizePins}
+        disabled={
+          pins.length === 0 ||
+          displayedPins.length === 0 ||
+          displayedPins.every(pin => pin.isKept)
+        }
+      >
+        Randomize
+      </button>
     </main>
   );
 }
