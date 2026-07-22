@@ -10,7 +10,8 @@ function loadSavedState() {
     if (!savedState) {
       return {
         selectedBoardId: "",
-        displayedPins: []
+        displayedPins: [],
+        favouritePins: []
       };
     }
 
@@ -20,7 +21,8 @@ function loadSavedState() {
 
     return {
       selectedBoardId: "",
-      displayedPins: []
+      displayedPins: [],
+      favouritePins: []
     };
   }
 }
@@ -35,6 +37,9 @@ function App() {
   const [pins, setPins] = useState([]);
   const [displayedPins, setDisplayedPins] = useState(
     savedState.displayedPins || []
+  );
+  const [favouritePins, setFavouritePins] = useState(
+  savedState.favouritePins || []
   );
   const [error, setError] = useState("");
 
@@ -132,20 +137,21 @@ function App() {
   }, [selectedBoardId]);
 
   useEffect(() => {
-    if (!selectedBoardId) {
-      return;
-    }
-
     const appState = {
       selectedBoardId,
-      displayedPins
+      displayedPins,
+      favouritePins
     };
 
     localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify(appState)
     );
-  }, [selectedBoardId, displayedPins]);
+  }, [
+    selectedBoardId,
+    displayedPins,
+    favouritePins
+  ]);
 
   function chooseRandomPins(pinList, amount = 3) {
     const shuffledPins = [...pinList];
@@ -241,6 +247,34 @@ function App() {
     setSelectedBoardId(event.target.value);
   }
 
+  function isFavourite(pinId) {
+  return favouritePins.some(pin => pin.id === pinId);
+}
+
+function toggleFavourite(pin) {
+  setFavouritePins(currentFavourites => {
+    const alreadySaved = currentFavourites.some(
+      favourite => favourite.id === pin.id
+    );
+
+    if (alreadySaved) {
+      return currentFavourites.filter(
+        favourite => favourite.id !== pin.id
+      );
+    }
+
+    return [
+      ...currentFavourites,
+      {
+        id: pin.id,
+        boardId: pin.boardId,
+        title: pin.title,
+        imageUrl: pin.imageUrl
+      }
+    ];
+  });
+}
+
 return (
   <main className="app">
     <header className="app-header">
@@ -319,6 +353,7 @@ return (
           <div className="pin-card-content">
             <h2>{pin.title}</h2>
 
+            <div className="pin-actions">
             <button
               className={
                 pin.isKept
@@ -330,10 +365,69 @@ return (
             >
               {pin.isKept ? "Release" : "Keep image"}
             </button>
+
+            <button
+              className={
+                isFavourite(pin.id)
+                  ? "save-button saved-button"
+                  : "save-button"
+              }
+              type="button"
+              onClick={() => toggleFavourite(pin)}
+            >
+              {isFavourite(pin.id)
+                ? "Saved"
+                : "Save favourite"}
+            </button>
+          </div>
           </div>
         </article>
       ))}
     </section>
+
+<section className="favourites-section">
+    <div className="section-heading">
+      <div>
+        <p className="eyebrow">Your collection</p>
+        <h2>Saved favourites</h2>
+      </div>
+
+      <span className="favourite-count">
+        {favouritePins.length}
+      </span>
+    </div>
+
+    {favouritePins.length > 0 ? (
+      <div className="favourites-grid">
+        {favouritePins.map(pin => (
+          <article
+            className="favourite-card"
+            key={pin.id}
+          >
+            <img
+              src={pin.imageUrl}
+              alt={pin.title}
+            />
+
+            <div className="favourite-card-content">
+              <h3>{pin.title}</h3>
+
+              <button
+                type="button"
+                onClick={() => toggleFavourite(pin)}
+              >
+                Remove
+              </button>
+            </div>
+          </article>
+        ))}
+      </div>
+    ) : (
+      <p className="empty-favourites">
+        Saved images will appear here.
+      </p>
+    )}
+  </section>
 
     {displayedPins.length === 0 && !error && (
       <p className="empty-message">
