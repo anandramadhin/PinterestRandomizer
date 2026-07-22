@@ -70,15 +70,73 @@ function App() {
 
 //The function below shouold choose random pins from the board
 function chooseRandomPins(pinList, amount = 3) {
-  const shuffledPins = [...pinList].sort(() => Math.random() - 0.5);
+  const shuffledPins = [...pinList];
 
-  return shuffledPins.slice(0, amount);
+  for (let index = shuffledPins.length - 1; index > 0; index--) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+
+    [shuffledPins[index], shuffledPins[randomIndex]] = [
+      shuffledPins[randomIndex],
+      shuffledPins[index]
+    ];
+  }
+
+  return shuffledPins.slice(0, amount).map(pin => ({
+    ...pin,
+    isKept: false
+  }));
 }
 
 function randomizePins() {
-  setDisplayedPins(chooseRandomPins(pins));
+  const keptPins = displayedPins.filter(pin => pin.isKept);
+  const unlockedCount = displayedPins.length - keptPins.length;
+
+  const keptIds = new Set(
+    keptPins.map(pin => pin.id)
+  );
+
+  const currentUnlockedIds = new Set(
+    displayedPins
+      .filter(pin => !pin.isKept)
+      .map(pin => pin.id)
+  );
+
+  let availablePins = pins.filter(
+    pin =>
+      !keptIds.has(pin.id) &&
+      !currentUnlockedIds.has(pin.id)
+  );
+
+  if (availablePins.length < unlockedCount) {
+    availablePins = pins.filter(
+      pin => !keptIds.has(pin.id)
+    );
+  }
+
+  const replacementPins = chooseRandomPins(
+    availablePins,
+    unlockedCount
+  );
+
+  setDisplayedPins([
+    ...keptPins,
+    ...replacementPins
+  ]);
 }
 
+
+function toggleKeep(pinId) {
+  setDisplayedPins(currentPins =>
+    currentPins.map(pin =>
+      pin.id === pinId
+        ? {
+            ...pin,
+            isKept: !pin.isKept
+          }
+        : pin
+    )
+  );
+}
   return (
     <main>
       <h1>Pinterest Randomizer</h1>
@@ -114,13 +172,23 @@ function randomizePins() {
             />
 
             <h2>{pin.title}</h2>
+
+            <button
+              type="button"
+              onClick={() => toggleKeep(pin.id)}
+            >
+              {pin.isKept ? "Release" : "Keep"}
+            </button>
           </article>
         ))}
       </section>
             <button
               type="button"
               onClick={randomizePins}
-              disabled={pins.length === 0}
+              disabled={
+                pins.length === 0 ||
+                displayedPins.every(pin => pin.isKept)
+              }
             >
               Randomize
             </button>
