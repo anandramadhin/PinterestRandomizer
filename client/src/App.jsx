@@ -88,18 +88,21 @@ function chooseRandomPins(pinList, amount = 3) {
 }
 
 function randomizePins() {
-  const keptPins = displayedPins.filter(pin => pin.isKept);
-  const unlockedCount = displayedPins.length - keptPins.length;
-
-  const keptIds = new Set(
-    keptPins.map(pin => pin.id)
-  );
-
   const currentUnlockedIds = new Set(
     displayedPins
       .filter(pin => !pin.isKept)
       .map(pin => pin.id)
   );
+
+  const keptIds = new Set(
+    displayedPins
+      .filter(pin => pin.isKept)
+      .map(pin => pin.id)
+  );
+
+  const unlockedCount = displayedPins.filter(
+    pin => !pin.isKept
+  ).length;
 
   let availablePins = pins.filter(
     pin =>
@@ -118,10 +121,20 @@ function randomizePins() {
     unlockedCount
   );
 
-  setDisplayedPins([
-    ...keptPins,
-    ...replacementPins
-  ]);
+  let replacementIndex = 0;
+
+  const updatedPins = displayedPins.map(pin => {
+    if (pin.isKept) {
+      return pin;
+    }
+
+    const replacement = replacementPins[replacementIndex];
+    replacementIndex += 1;
+
+    return replacement;
+  });
+
+  setDisplayedPins(updatedPins);
 }
 
 
