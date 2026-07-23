@@ -1,85 +1,425 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pinterest Randomizer - Privacy Policy</title>
+  <meta charset="UTF-8">
 
-    <style>
-        body{
-            max-width:800px;
-            margin:40px auto;
-            font-family:Arial, Helvetica, sans-serif;
-            line-height:1.6;
-            padding:20px;
-            color:#333;
-        }
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-        h1{
-            color:#BD081C;
-        }
+  <meta
+    name="description"
+    content="Privacy Policy for Pinterest Randomizer."
+  >
 
-        h2{
-            margin-top:35px;
-        }
+  <title>Pinterest Randomizer | Privacy Policy</title>
 
-        code{
-            background:#f5f5f5;
-            padding:2px 6px;
-        }
-    </style>
+  <style>
+    :root {
+      --page-background: #f6f7f9;
+      --card-background: #ffffff;
+      --text-primary: #202124;
+      --text-secondary: #5f6368;
+      --accent: #e60023;
+      --accent-dark: #bd001d;
+      --border: #e4e6ea;
+      --soft-accent: #fff1f3;
+      --shadow: 0 24px 60px rgba(28, 32, 40, 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      background:
+        radial-gradient(
+          circle at top left,
+          rgba(230, 0, 35, 0.08),
+          transparent 34rem
+        ),
+        var(--page-background);
+      color: var(--text-primary);
+      font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+      line-height: 1.7;
+    }
+
+    .site-header {
+      padding: 28px 24px 0;
+    }
+
+    .header-inner {
+      width: min(1080px, 100%);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 14px;
+      background: var(--accent);
+      color: #ffffff;
+      font-size: 1.25rem;
+      box-shadow: 0 10px 24px rgba(230, 0, 35, 0.25);
+    }
+
+    .status-badge {
+      padding: 8px 14px;
+      border: 1px solid #ffd3da;
+      border-radius: 999px;
+      background: var(--soft-accent);
+      color: var(--accent-dark);
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    main {
+      width: min(1080px, calc(100% - 32px));
+      margin: 34px auto 64px;
+    }
+
+    .hero {
+      padding: 54px 48px;
+      border-radius: 30px 30px 0 0;
+      background:
+        linear-gradient(
+          135deg,
+          rgba(230, 0, 35, 0.98),
+          rgba(176, 0, 27, 0.94)
+        );
+      color: #ffffff;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero::after {
+      content: "";
+      width: 240px;
+      height: 240px;
+      position: absolute;
+      right: -70px;
+      bottom: -110px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.85;
+    }
+
+    .hero h1 {
+      max-width: 720px;
+      margin: 0;
+      font-size: clamp(2.4rem, 6vw, 4.5rem);
+      line-height: 1.04;
+      letter-spacing: -0.05em;
+    }
+
+    .hero-description {
+      max-width: 690px;
+      margin: 22px 0 0;
+      font-size: 1.05rem;
+      color: rgba(255, 255, 255, 0.88);
+    }
+
+    .updated {
+      display: inline-block;
+      margin-top: 24px;
+      padding: 9px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .policy-card {
+      padding: 18px 48px 52px;
+      border: 1px solid var(--border);
+      border-top: 0;
+      border-radius: 0 0 30px 30px;
+      background: var(--card-background);
+      box-shadow: var(--shadow);
+    }
+
+    .summary-box {
+      margin: 12px 0 42px;
+      padding: 24px;
+      border: 1px solid #f2c5cc;
+      border-radius: 20px;
+      background: var(--soft-accent);
+    }
+
+    .summary-box strong {
+      color: var(--accent-dark);
+    }
+
+    .policy-section {
+      padding: 30px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .policy-section:last-child {
+      border-bottom: 0;
+    }
+
+    .section-number {
+      display: inline-flex;
+      width: 34px;
+      height: 34px;
+      margin-bottom: 12px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 11px;
+      background: #f1f2f4;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 800;
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: 1.5rem;
+      line-height: 1.3;
+      letter-spacing: -0.025em;
+    }
+
+    p {
+      margin: 0;
+      color: var(--text-secondary);
+    }
+
+    ul {
+      margin: 16px 0 0;
+      padding-left: 22px;
+      color: var(--text-secondary);
+    }
+
+    li {
+      margin-bottom: 10px;
+      padding-left: 4px;
+    }
+
+    .contact-card {
+      margin-top: 18px;
+      padding: 22px;
+      border-radius: 18px;
+      background: #f7f8fa;
+    }
+
+    .contact-card p + p {
+      margin-top: 8px;
+    }
+
+    .contact-card a {
+      color: var(--accent);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .contact-card a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      padding: 0 24px 36px;
+      color: #777b82;
+      font-size: 0.88rem;
+      text-align: center;
+    }
+
+    @media (max-width: 700px) {
+      .site-header {
+        padding: 20px 16px 0;
+      }
+
+      .header-inner {
+        align-items: flex-start;
+      }
+
+      .status-badge {
+        display: none;
+      }
+
+      main {
+        width: min(100% - 20px, 1080px);
+        margin-top: 22px;
+      }
+
+      .hero {
+        padding: 38px 26px;
+        border-radius: 24px 24px 0 0;
+      }
+
+      .policy-card {
+        padding: 14px 26px 36px;
+        border-radius: 0 0 24px 24px;
+      }
+
+      .summary-box {
+        margin-bottom: 24px;
+      }
+    }
+  </style>
 </head>
 
 <body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="./">
+        <span class="brand-mark">P</span>
+        <span>Pinterest Randomizer</span>
+      </a>
 
-<h1>Privacy Policy</h1>
+      <span class="status-badge">
+        Privacy Policy
+      </span>
+    </div>
+  </header>
 
-<p><strong>Last Updated:</strong> July 22, 2026</p>
+  <main>
+    <section class="hero">
+      <p class="eyebrow">Legal and privacy</p>
 
-<p>
-Pinterest Randomizer is a personal project that helps users randomly select
-images from their own Pinterest boards.
-</p>
+      <h1>Privacy Policy</h1>
 
-<h2>Information We Access</h2>
+      <p class="hero-description">
+        This policy explains how Pinterest Randomizer accesses and uses
+        Pinterest information when you connect your account.
+      </p>
 
-<p>
-When you authorize Pinterest Randomizer, the application may access your
-Pinterest boards and pins solely to provide the application's functionality.
-</p>
+      <span class="updated">
+        Last updated: July 22, 2026
+      </span>
+    </section>
 
-<h2>How Your Information Is Used</h2>
+    <article class="policy-card">
+      <div class="summary-box">
+        <strong>In summary:</strong>
+        Pinterest Randomizer accesses your boards and pins only to provide
+        its image-selection features. Your Pinterest information is not sold
+        or shared with third parties.
+      </div>
 
-<ul>
-<li>Display your Pinterest boards.</li>
-<li>Retrieve pins from your selected boards.</li>
-<li>Randomly display images for inspiration.</li>
-</ul>
+      <section class="policy-section">
+        <span class="section-number">01</span>
 
-<h2>Data Storage</h2>
+        <h2>About Pinterest Randomizer</h2>
 
-<p>
-At this time, Pinterest Randomizer does not permanently store your Pinterest
-content on external servers. Temporary application data may be stored locally
-within your browser to improve your experience.
-</p>
+        <p>
+          Pinterest Randomizer is a personal project that helps users
+          randomly select images from their own Pinterest boards.
+        </p>
+      </section>
 
-<h2>Sharing of Information</h2>
+      <section class="policy-section">
+        <span class="section-number">02</span>
 
-<p>
-Your Pinterest information is not sold or shared with third parties.
-</p>
+        <h2>Information We Access</h2>
 
-<h2>Contact</h2>
+        <p>
+          When you authorize Pinterest Randomizer, the application may
+          access your Pinterest boards and pins solely to provide the
+          application's functionality.
+        </p>
+      </section>
 
-<p>
-For questions regarding this Privacy Policy, please contact:
-</p>
+      <section class="policy-section">
+        <span class="section-number">03</span>
 
-<p>
-<strong>Anand Ramadhin</strong><br>
-Email: anandramadhin1@gmail.com
-</p>
+        <h2>How Your Information Is Used</h2>
 
+        <ul>
+          <li>Display your Pinterest boards.</li>
+          <li>Retrieve pins from your selected boards.</li>
+          <li>Randomly display images for inspiration.</li>
+        </ul>
+      </section>
+
+      <section class="policy-section">
+        <span class="section-number">04</span>
+
+        <h2>Data Storage</h2>
+
+        <p>
+          At this time, Pinterest Randomizer does not permanently store
+          your Pinterest content on external servers. Temporary application
+          data may be stored locally within your browser to improve your
+          experience.
+        </p>
+      </section>
+
+      <section class="policy-section">
+        <span class="section-number">05</span>
+
+        <h2>Sharing of Information</h2>
+
+        <p>
+          Your Pinterest information is not sold or shared with third
+          parties.
+        </p>
+      </section>
+
+      <section class="policy-section">
+        <span class="section-number">06</span>
+
+        <h2>Contact</h2>
+
+        <p>
+          For questions regarding this Privacy Policy, please use the
+          contact information below.
+        </p>
+
+        <div class="contact-card">
+          <p><strong>Anand Ramadhin</strong></p>
+
+          <p>
+            Email:
+            <a href="mailto:anandramadhin1@gmail.com">
+              anand.ramadhin1@gmail.com
+            </a>
+          </p>
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <footer>
+    © 2026 Pinterest Randomizer. All rights reserved.
+  </footer>
 </body>
 </html>
