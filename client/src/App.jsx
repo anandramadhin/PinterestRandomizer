@@ -41,6 +41,7 @@ function App() {
   const [favouritePins, setFavouritePins] = useState(
   savedState.favouritePins || []
   );
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -86,6 +87,7 @@ function App() {
 
     async function loadPins() {
       try {
+        setLoading(true);
         setError("");
 
         const response = await fetch(
@@ -111,6 +113,7 @@ function App() {
                   availablePin.boardId === selectedBoardId
               )
             );
+        setLoading(false);
 
           if (!savedPinsAreValid) {
             return chooseRandomPins(data);
@@ -130,6 +133,7 @@ function App() {
       } catch (err) {
         console.error(err);
         setError("Could not load the pins.");
+        setLoading(false);
       }
     }
 
@@ -306,6 +310,11 @@ return (
       </div>
 
       <button
+        disabled={
+          loading ||
+          pins.length === 0 ||
+          displayedPins.every(pin => pin.isKept)
+        }
         className="randomize-button"
         type="button"
         onClick={randomizePins}
@@ -325,6 +334,10 @@ return (
       </p>
     )}
 
+
+    {loading && (
+    <p>Loading images...</p>
+    )}
     <section className="pin-grid">
       {displayedPins.map((pin, index) => (
         <article
@@ -355,6 +368,7 @@ return (
 
             <div className="pin-actions">
             <button
+              disabled={loading}
               className={
                 pin.isKept
                   ? "keep-button release-button"
