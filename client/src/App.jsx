@@ -283,7 +283,7 @@ return (
   <main className="app">
     <header className="app-header">
       <p className="eyebrow">Inspiration generator</p>
-      <h1>Pinterest Randomizer</h1>
+      <h1>Muse Mixer</h1>
       <p className="subtitle">
         Choose a board, keep the images you like, and
         randomize the rest.
