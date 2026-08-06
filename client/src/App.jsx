@@ -47,9 +47,9 @@ function App() {
   useEffect(() => {
     async function loadBoards() {
       try {
-        const response = await fetch(
-          "http://localhost:3000/api/boards"
-        );
+      const response = await fetch(
+        `/api/pins?boardId=${selectedBoardId}`
+      );
 
         if (!response.ok) {
           throw new Error(
@@ -90,9 +90,9 @@ function App() {
         setLoading(true);
         setError("");
 
-        const response = await fetch(
-          `http://localhost:3000/api/pins?boardId=${selectedBoardId}`
-        );
+      const response = await fetch(
+        `/api/pins?boardId=${selectedBoardId}`
+      );
 
         if (!response.ok) {
           throw new Error(
