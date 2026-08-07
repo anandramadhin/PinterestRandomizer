@@ -47,9 +47,7 @@ function App() {
   useEffect(() => {
     async function loadBoards() {
       try {
-      const response = await fetch(
-        `/api/pins?boardId=${selectedBoardId}`
-      );
+    const response = await fetch("/api/boards");
 
         if (!response.ok) {
           throw new Error(
